@@ -5,7 +5,7 @@
 
 Light::Light(const char* vsPath, const char* fsPath)
 {
-	shader = LoadShader("../assets/shaders/light.vs", "../assets/shaders/light.fs");
+	shader = LoadShader(vsPath, fsPath);
 	shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
 
 	u_color = GetShaderLocation(shader, "color");

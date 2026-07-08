@@ -27,7 +27,6 @@ public :
 
 private :
 	View m_view;
-	
+	AssetManager& m_assetManager;
 	GameObject m_castle;
-	Light m_light;
 };

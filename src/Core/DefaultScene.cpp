@@ -1,20 +1,18 @@
 #include "DefaultScene.hpp"
 #include "../Settings.hpp"
 
-DefaultScene::DefaultScene() : m_view(ViewMode::FPS)
+DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManager::instance())
 {
-	AssetManager& assetManager = AssetManager::instance();
-	
 	//Load model, texture, shader and configure assets
-	assetManager.texture["castle"] = LoadTexture("../assets/textures/castle_diffuse.png");
-	assetManager.modele["castle"] = LoadModel("../assets/models/castle.obj");
-	assetManager.shader["light"] = Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
+	m_assetManager.texture["castle"] = LoadTexture("../assets/textures/castle_diffuse.png");
+	m_assetManager.modele["castle"] = LoadModel("../assets/models/castle.obj");
+	m_assetManager.shader["light"] = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 
-	assetManager.setModeleTexture("castle", MATERIAL_MAP_DIFFUSE, assetManager.texture["castle"]);
-	assetManager.setMaterialShader("castle", assetManager.shader["light"].shader);
+	m_assetManager.setModeleTexture("castle", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["castle"]);
+	m_assetManager.setMaterialShader("castle", m_assetManager.shader["light"]->shader);
 
 	//Setup game object
-	m_castle.model = &assetManager.modele["castle"];
+	m_castle.model = &m_assetManager.modele["castle"];
 	//m_castle.transform.translation = { 90, 0, 0 };
 }
 
@@ -27,7 +25,7 @@ void DefaultScene::update()
 	}
 		
 	//Set shaders value
-	m_light.updateUniform();
+	m_assetManager.shader["light"]->updateUniform();
 }
 
 void DefaultScene::render()
@@ -46,7 +44,7 @@ void DefaultScene::gui()
 {
 	ImGui::Begin("Settings");
 		ImGui::Text("FPS : %i", GetFPS());		
-		m_light.gui();
+		m_assetManager.shader["light"]->gui();
 		m_castle.gui();
 		m_view.gui();
 	ImGui::End();

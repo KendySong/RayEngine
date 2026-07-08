@@ -1,5 +1,7 @@
 #include "ShaderSkeleton.hpp"
 
+#include <iostream>
+
 ShaderSkeleton::~ShaderSkeleton()
 {
 
@@ -7,7 +9,7 @@ ShaderSkeleton::~ShaderSkeleton()
 
 void ShaderSkeleton::updateUniform()
 {
-
+	
 }
 
 void ShaderSkeleton::gui()
