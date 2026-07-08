@@ -93,7 +93,8 @@ private :
 ```
 
 ## Assets management
-Every GameObject from GameObject class will point to a model from the asset manager singleton
+Every GameObject from GameObject class will point to a model from the asset manager singleton.
+Each asset has to be stored directly in the asset manager for avoiding memory bug
 ```C++
 //Load shader
 light = Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");

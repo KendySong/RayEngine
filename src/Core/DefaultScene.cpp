@@ -2,18 +2,16 @@
 #include "../Settings.hpp"
 
 DefaultScene::DefaultScene() : m_view(ViewMode::FPS)
-{	
+{
 	AssetManager& assetManager = AssetManager::instance();
 	
-	//Load shader
-	m_light = Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
-
-	//Load and configure assets
+	//Load model, texture, shader and configure assets
 	assetManager.texture["castle"] = LoadTexture("../assets/textures/castle_diffuse.png");
 	assetManager.modele["castle"] = LoadModel("../assets/models/castle.obj");
+	assetManager.shader["light"] = Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 
 	assetManager.setModeleTexture("castle", MATERIAL_MAP_DIFFUSE, assetManager.texture["castle"]);
-	assetManager.setMaterialShader("castle", m_light.shader);
+	assetManager.setMaterialShader("castle", assetManager.shader["light"].shader);
 
 	//Setup game object
 	m_castle.model = &assetManager.modele["castle"];
