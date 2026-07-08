@@ -1,0 +1,20 @@
+#pragma once
+#include <unordered_map>
+#include <string>
+
+#include <raylib/raylib.h>
+
+class AssetManager
+{
+public :
+    static AssetManager& instance();
+    std::unordered_map<std::string, Texture2D> texture;
+    std::unordered_map<std::string, Model> modele;
+
+    void setModeleTexture(const std::string& name, int mapType, const Texture2D& texture);
+    void setMaterialShader(const std::string& name, const Shader& shader);
+
+private :
+    AssetManager() = default;
+    static AssetManager s_intance;
+};
