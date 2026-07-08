@@ -16,7 +16,7 @@ void GameObject::draw()
     Matrix rotation = MatrixRotateX(transform.rotation.x) * MatrixRotateY(transform.rotation.y) * MatrixRotateZ(transform.rotation.z);
     Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
 
-    Matrix world = translate * rotation * scale;
+    Matrix world = scale * rotation * translate;
     model->transform = world;
 
     DrawModel(*model, { 0, 0, 0 }, 1, WHITE);
