@@ -28,7 +28,7 @@ void Window::run()
 	sceneManager.scenes["default"] = &scene;
 	sceneManager.scenes["room"] = &roomScene;
 
-	sceneManager.setCurrent("room");
+	sceneManager.setCurrent("default");
 	
 	//Init default keys setup
 	Input::instance();

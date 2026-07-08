@@ -14,12 +14,12 @@ public :
 	void executeNavigation();
 	void executeViewDrag2D();
 	void executeViewFPS();
-	
 
 	//input-function binding foreach situation
 	KeyEvent navigation;
 	KeyEvent viewDrag2D;
 	KeyEvent viewFPS;
+
 
 
 private:

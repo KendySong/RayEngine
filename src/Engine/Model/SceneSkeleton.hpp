@@ -4,6 +4,7 @@ class SceneSkeleton
 {
 public :
     SceneSkeleton() = default;
+	virtual ~SceneSkeleton();
 
 	virtual void update() = 0;
 	virtual void gui() = 0;
