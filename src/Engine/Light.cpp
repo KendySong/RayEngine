@@ -3,16 +3,13 @@
 
 #include "Light.hpp"
 
-Light::Light(const char* vsPath, const char* fsPath)
+Light::Light(const char* vsPath, const char* fsPath) : color({ 1, 1, 1 }), position({ 0, 0, 0 })
 {
 	shader = LoadShader(vsPath, fsPath);
 	shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
 
 	u_color = GetShaderLocation(shader, "color");
 	u_position = GetShaderLocation(shader, "lightPosition");
-
-	color = { 1, 1, 1 };
-	position = { -5, 0, 0 };
 }
 
 void Light::updateUniform()

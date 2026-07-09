@@ -5,6 +5,7 @@
 #include <raylib/raylib.h>
 
 #include "Model/ShaderSkeleton.hpp"
+#include "Animator.hpp"
 
 class AssetManager
 {
@@ -12,6 +13,7 @@ public :
     static AssetManager& instance();
     std::unordered_map<std::string, Texture2D> texture;
     std::unordered_map<std::string, Model> modele;
+    std::unordered_map<std::string, Animator> animator;
     std::unordered_map<std::string, ShaderSkeleton*> shader;
 
     void setModeleTexture(const std::string& name, int mapType, const Texture2D& texture);

@@ -28,5 +28,8 @@ public :
 private :
 	View m_view;
 	AssetManager& m_assetManager;
+
 	GameObject m_castle;
+	GameObject m_robot;
+	GameObject m_turret;
 };

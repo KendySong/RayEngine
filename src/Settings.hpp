@@ -14,6 +14,8 @@ public :
     static const float cameraSpeed;
     static bool  editMode;
 
+    static const float defaultAnimSpeed;
+
 private :
     Settings();
 };

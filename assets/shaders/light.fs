@@ -32,5 +32,4 @@ void main()
     //    times the tint color (colDiffuse)
     //    times the fragment color (interpolated vertex color)
     finalColor = vec4(vec3(intensity) * color, 1) * texelColor * colDiffuse * fragColor;
-
 }
