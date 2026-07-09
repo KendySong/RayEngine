@@ -5,6 +5,7 @@
 #include <Raylib/raylib.h>
 #include <Raylib/raymath.h>
 #include <Raylib/rlgl.h>
+#include <Raylib/raygui.h>
 
 #include <ImGui/rlImGui.h>
 #include <Imgui/imgui.h>

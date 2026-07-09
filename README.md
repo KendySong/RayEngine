@@ -5,6 +5,7 @@ Mini game engine for 3D and 2D games with RayLib and ImGui</br>
 - Input
 - Scene
 - Assets
+- Animation are supported for .iqm et .glb files
 
 ## How to take the project
 ```git

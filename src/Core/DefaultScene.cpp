@@ -7,6 +7,10 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 	Light* light = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 	light->position = { -20, 0, 0 };
 
+	Light* lightRed = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
+	lightRed->position = { -20, 0, -40 };
+	lightRed->color = { 1, 0, 0 };
+
 	//Load model, texture, shader, animation and configure assets
 	m_assetManager.modele ["castle"]	= LoadModel("../assets/models/castle.obj");
 	m_assetManager.modele ["robot"]		= LoadModel("../assets/models/robot.glb");
@@ -14,12 +18,13 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 	m_assetManager.texture["castle"]	= LoadTexture("../assets/textures/castle_diffuse.png");
 	m_assetManager.texture["turret"]	= LoadTexture("../assets/textures/turret_diffuse.png");
 	m_assetManager.shader ["light"]		= light;
+	m_assetManager.shader["lightRed"]	= lightRed;
 
 	m_assetManager.setModeleTexture( "castle", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["castle"]);
 	m_assetManager.setModeleTexture( "turret", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["turret"]);
 	m_assetManager.setMaterialShader("castle", m_assetManager.shader["light"]->shader);
 	m_assetManager.setMaterialShader("robot",  m_assetManager.shader["light"]->shader);
-	m_assetManager.setMaterialShader("turret", m_assetManager.shader["light"]->shader);
+	m_assetManager.setMaterialShader("turret", m_assetManager.shader["lightRed"]->shader);
 
 	m_assetManager.animator["robot"] = Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
 
@@ -46,12 +51,25 @@ void DefaultScene::update()
 	}
 		
 	m_assetManager.shader["light"]->updateUniform();
+	m_assetManager.shader["lightRed"]->updateUniform();
 	m_assetManager.animator["robot"].update();
 }
 
 void DefaultScene::render()
 {
 	ClearBackground({ 30, 30, 30 });
+
+	static  bool showMessageBox = false;
+	if (GuiButton({ 24, 24, 120, 30 }, "#191#Show Message")) showMessageBox = true;
+
+	if (showMessageBox)
+	{
+		int result = GuiMessageBox({ 85, 70, 250, 100 },
+			"#191#Message Box", "Hi! This is a message!", "Nice;Cool");
+
+		if (result >= 0) showMessageBox = false;
+	}
+
 
 	BeginMode3D(m_view.camera3D);	
 		m_castle.draw();

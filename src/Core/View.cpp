@@ -6,12 +6,12 @@
 View::View(ViewMode mode)
 {
 	this->mode = mode;
-	m_zoomScale = 1.2f;
-	m_sensitivity = 0.125f;
-	m_observationDist = 20;
+	m_zoomScale = Settings::d_zoomScale;
+	m_sensitivity = Settings::d_sensitivity;
+	m_observationDist = Settings::d_observationDist;
 	m_yaw = 0;
 	m_pitch = 0;
-	m_speed = Settings::cameraSpeed;
+	m_speed = Settings::d_cameraSpeed;
 
 	camera2D.target = { 0, 0 };
 	camera2D.offset = { 0, 0 };

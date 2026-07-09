@@ -11,10 +11,16 @@ public :
 
     static const std::uint32_t width;
     static const std::uint32_t height;
-    static const float cameraSpeed;
+
+    //Camera and controls
+    static const float d_zoomScale;
+    static const float d_cameraSpeed;
+    static const float d_sensitivity;
+    static const float d_observationDist;
+    static const float d_fov;
     static bool  editMode;
 
-    static const float defaultAnimSpeed;
+    static const float d_AnimSpeed;
 
 private :
     Settings();
