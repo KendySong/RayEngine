@@ -3,6 +3,36 @@
 
 DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManager::instance())
 {
+	//Create world
+	b3WorldDef worldDef = b3DefaultWorldDef();
+	worldDef.gravity = Settings::g;
+	m_worldID = b3CreateWorld(&worldDef);
+
+	//Create ground by putting a boxhull with body def (static by default)
+	b3BodyDef groundBodyDef = b3DefaultBodyDef();
+	groundBodyDef.position = { 0, -10, 0 };
+	b3BodyId groundId = b3CreateBody(m_worldID, &groundBodyDef);
+	
+	b3BoxHull box = b3MakeBoxHull(50, 10, 50);
+	b3ShapeDef shapeDef = b3DefaultShapeDef();
+	b3CreateHullShape(groundId, &shapeDef, &box.base);
+
+	//Create dynamic body box
+	b3BodyDef bodyDef = b3DefaultBodyDef();
+	bodyDef.type = b3_dynamicBody;
+	bodyDef.position = { 0, 4, 0 };
+	m_bodyID1 = b3CreateBody(m_worldID, &bodyDef);
+
+	bodyDef.position = { 1, 10, 0 };
+	m_bodyID2 = b3CreateBody(m_worldID, &bodyDef);
+
+	b3BoxHull dynamicBox = b3MakeCubeHull(2.0f);
+	b3ShapeDef boxShapeDef = b3DefaultShapeDef();
+	boxShapeDef.density = 1.0f;
+	boxShapeDef.baseMaterial.friction = 0.3f;
+	b3CreateHullShape(m_bodyID1, &boxShapeDef, &dynamicBox.base);
+	b3CreateHullShape(m_bodyID2, &boxShapeDef, &dynamicBox.base);
+
 	//Configure the shaders
 	Light* light = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 	light->position = { -20, 0, 0 };
@@ -40,6 +70,14 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 	m_turret.model = &m_assetManager.modele["turret"];
 	m_turret.transform.translation = { 20, 0, -25 };
 	m_turret.transform.rotation = { 0, 0, 0 };
+
+	m_cube1.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
+	m_cube2.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
+
+	//Define key with actions
+	Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
+		b3Body_ApplyLinearImpulseToCenter(m_bodyID1, { 0, 10, 0 }, true);
+	};
 }
 
 void DefaultScene::update()
@@ -53,6 +91,22 @@ void DefaultScene::update()
 	m_assetManager.shader["light"]->updateUniform();
 	m_assetManager.shader["lightRed"]->updateUniform();
 	m_assetManager.animator["robot"].update();
+
+	//Physics
+	b3World_Step(m_worldID, dt, Settings::subStepCount);
+	b3Vec3 p1 = b3Body_GetPosition(m_bodyID1);
+	b3Quat r1= b3Body_GetRotation(m_bodyID1);
+	r1 = b3NormalizeQuat(r1);
+
+	m_cube1.transform.translation = { p1.x, p1.y, p1.z };
+	m_cube1.transform.rotation = { r1.v.x, r1.v.y, r1.v.z };
+
+	b3Vec3 p2 = b3Body_GetPosition(m_bodyID2);
+	b3Quat r2 = b3Body_GetRotation(m_bodyID2);
+	r2 = b3NormalizeQuat(r2);
+
+	m_cube2.transform.translation = { p2.x, p2.y, p2.z };
+	m_cube2.transform.rotation = { r2.v.x, r2.v.y, r2.v.z };
 }
 
 void DefaultScene::render()
@@ -63,6 +117,8 @@ void DefaultScene::render()
 		m_castle.draw();
 		m_robot.draw();
 		m_turret.draw();
+		m_cube1.draw();
+		m_cube2.draw();
 		DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 		DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
 		DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);

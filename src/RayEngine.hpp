@@ -5,3 +5,4 @@
 #include "Engine/SceneManager.hpp"
 #include "Engine/Model/ShaderSkeleton.hpp"
 #include "Engine/Model/SceneSkeleton.hpp"
+#include "Engine/Animator.hpp"

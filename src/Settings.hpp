@@ -4,6 +4,8 @@
 #include <Raylib/raylib.h>
 #include <Raylib/raymath.h>
 
+#include <box3d/box3d.h>
+
 class Settings
 {
 public :
@@ -21,6 +23,10 @@ public :
     static bool  editMode;
 
     static const float d_animSpeed;
+
+    //Physics
+    static const b3Vec3 g;
+    static const int subStepCount;
 
 private :
     Settings();

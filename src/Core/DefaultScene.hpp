@@ -10,12 +10,13 @@
 #include <ImGui/rlImGui.h>
 #include <Imgui/imgui.h>
 
+#include <RayEngine.hpp>
+#include <box3d/box3d.h>
+
 #include "View.hpp"
-#include "../Engine/GameObject.hpp"
-#include "../Engine/AssetManager.hpp"
+#include "Math.hpp"
 #include "../Engine/Light.hpp"
-#include "../Engine/Input.hpp"
-#include "../Engine/Model/SceneSkeleton.hpp"
+
 
 class DefaultScene : public SceneSkeleton
 {
@@ -33,4 +34,13 @@ private :
 	GameObject m_castle;
 	GameObject m_robot;
 	GameObject m_turret;
+
+
+	GameObject m_cube1;
+	GameObject m_cube2;
+
+	//Physics
+	b3WorldId m_worldID;
+	b3BodyId  m_bodyID1;
+	b3BodyId  m_bodyID2;
 };

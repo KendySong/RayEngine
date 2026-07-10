@@ -16,21 +16,17 @@ project "RayEngine"
     libdirs "libraries/lib"
     links {
         "opengl32",
-        "winmm"
+        "winmm",
+        "raylib",
+        "raylibdll",
+        "box3d"
     }
 
 filter "configurations:Debug"
     defines "DEBUG"
     symbols "On"
-    links {
-        "raylib",
-        "raylibdll",
-    }
+
 
 filter "configurations:Release"
     defines "RELEASE"
     optimize "Speed"
-    links {
-        "raylib",
-        "raylibdll",
-    }
