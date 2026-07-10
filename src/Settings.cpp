@@ -18,4 +18,4 @@ const float			Settings::d_observationDist = 20;
 const float			Settings::d_fov				= 90;
 bool				Settings::editMode			= false;
 
-const float			Settings::d_AnimSpeed		= 100;
+const float			Settings::d_animSpeed		= 100;

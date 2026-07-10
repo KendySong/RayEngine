@@ -16,6 +16,7 @@ premake5 vs2026
 
 ## Used libraries
 - Raylib
+- RayGui
 - ImGui
 
 ## Scene management

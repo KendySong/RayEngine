@@ -6,7 +6,7 @@
 GameObject::GameObject()
 {
     transform.translation   = { 0, 0, 0 };
-    transform.rotation      = QuaternionFromEuler(0, 0, 0);
+    transform.rotation      = QuaternionIdentity();
     transform.scale         = { 1, 1, 1 };
 }
 
@@ -15,7 +15,7 @@ void GameObject::draw()
     Matrix translate = MatrixTranslate(transform.translation.x, transform.translation.y, transform.translation.z);
     Matrix rotation = MatrixRotateX(transform.rotation.x) * MatrixRotateY(transform.rotation.y) * MatrixRotateZ(transform.rotation.z);
     Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
-
+    
     Matrix world = scale * rotation * translate;
     model->transform = world;
 

@@ -59,18 +59,6 @@ void DefaultScene::render()
 {
 	ClearBackground({ 30, 30, 30 });
 
-	static  bool showMessageBox = false;
-	if (GuiButton({ 24, 24, 120, 30 }, "#191#Show Message")) showMessageBox = true;
-
-	if (showMessageBox)
-	{
-		int result = GuiMessageBox({ 85, 70, 250, 100 },
-			"#191#Message Box", "Hi! This is a message!", "Nice;Cool");
-
-		if (result >= 0) showMessageBox = false;
-	}
-
-
 	BeginMode3D(m_view.camera3D);	
 		m_castle.draw();
 		m_robot.draw();
@@ -83,6 +71,11 @@ void DefaultScene::render()
 
 void DefaultScene::gui()
 {
+	if (GuiButton({ 24, 24, 120, 30 }, "#158#Exit"))
+	{
+		exit(0);
+	}
+
 	ImGui::Begin("Settings");
 		ImGui::Text("FPS : %i", GetFPS());		
 		m_assetManager.shader["light"]->gui();

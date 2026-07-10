@@ -20,7 +20,7 @@ public :
     static const float d_fov;
     static bool  editMode;
 
-    static const float d_AnimSpeed;
+    static const float d_animSpeed;
 
 private :
     Settings();

@@ -21,7 +21,7 @@ View::View(ViewMode mode)
 	camera3D.position = { 0, 0, 0};
 	camera3D.target = { 0, 0, 0 };
 	camera3D.up = { 0, 1, 0 };
-	camera3D.fovy = 90;
+	camera3D.fovy = Settings::d_fov;
 	camera3D.projection = CAMERA_PERSPECTIVE;
 
 	this->setupDefaultInput(this->mode);

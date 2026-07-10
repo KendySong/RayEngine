@@ -11,7 +11,7 @@ Animator::Animator(const char* path, Model* model) : m_index(0), m_frame(0), m_m
         m_animName.emplace_back(m_modelAnim[i].name);
     }
 
-    speed = Settings::d_AnimSpeed;
+    speed = Settings::d_animSpeed;
 }
 
 void Animator::update()
