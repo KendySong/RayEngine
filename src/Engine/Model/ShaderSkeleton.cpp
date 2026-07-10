@@ -2,17 +2,17 @@
 
 #include <iostream>
 
-ShaderSkeleton::~ShaderSkeleton()
+RE::ShaderSkeleton::~ShaderSkeleton()
 {
 
 }
 
-void ShaderSkeleton::updateUniform()
+void RE::ShaderSkeleton::updateUniform()
 {
 	
 }
 
-void ShaderSkeleton::gui()
+void RE::ShaderSkeleton::gui()
 {
 
 }

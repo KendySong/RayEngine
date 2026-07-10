@@ -1,15 +1,15 @@
 #include "Input.hpp"
 #include "../Settings.hpp"
 
-Input Input::s_instance;
+RE::Input RE::Input::s_instance;
 
-Input& Input::instance()
+RE::Input& RE::Input::instance()
 {
 	return s_instance;
 }
 
 //Default keys definition
-Input::Input()
+RE::Input::Input()
 {
 	navigation.down[KEY_ESCAPE] = []() -> void {
 		Settings::editMode = !Settings::editMode;
@@ -24,22 +24,22 @@ Input::Input()
 	};
 }
 
-void Input::executeNavigation()
+void RE::Input::executeNavigation()
 {
 	executeKeyEvent(this->navigation);
 }
 
-void Input::executeViewDrag2D()
+void RE::Input::executeViewDrag2D()
 {
 	executeKeyEvent(this->viewDrag2D);
 }
 
-void Input::executeViewFPS()
+void RE::Input::executeViewFPS()
 {
 	executeKeyEvent(this->viewFPS);
 }
 
-void Input::executeKeyEvent(const KeyEvent& keyEvent)
+void RE::Input::executeKeyEvent(const RE::KeyEvent& keyEvent)
 {
 	for (const auto& [key, f] : keyEvent.down)
 	{

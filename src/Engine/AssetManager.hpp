@@ -7,19 +7,22 @@
 #include "Model/ShaderSkeleton.hpp"
 #include "Animator.hpp"
 
-class AssetManager
+namespace RE
 {
-public :
-    static AssetManager& instance();
-    std::unordered_map<std::string, Texture2D> texture;
-    std::unordered_map<std::string, Model> modele;
-    std::unordered_map<std::string, Animator> animator;
-    std::unordered_map<std::string, ShaderSkeleton*> shader;
+    class AssetManager
+    {
+    public:
+        static AssetManager& instance();
+        std::unordered_map<std::string, Texture2D> texture;
+        std::unordered_map<std::string, Model> modele;
+        std::unordered_map<std::string, RE::Animator> animator;
+        std::unordered_map<std::string, ShaderSkeleton*> shader;
 
-    void setModeleTexture(const std::string& name, int mapType, const Texture2D& texture);
-    void setMaterialShader(const std::string& name, const Shader& shader);
+        void setModeleTexture(const std::string& name, int mapType, const Texture2D& texture);
+        void setMaterialShader(const std::string& name, const Shader& shader);
 
-private :
-    AssetManager() = default;
-    static AssetManager s_intance;
-};
+    private:
+        AssetManager() = default;
+        static AssetManager s_intance;
+    };
+}

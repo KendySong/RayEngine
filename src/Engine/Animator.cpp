@@ -1,7 +1,7 @@
 #include "Animator.hpp"
 #include "../Settings.hpp"
 
-Animator::Animator(const char* path, Model* model) : m_index(0), m_frame(0), m_model(model)
+RE::Animator::Animator(const char* path, Model* model) : m_index(0), m_frame(0), m_model(model)
 {
     m_modelAnim = LoadModelAnimations(path, &m_count);
 
@@ -14,7 +14,7 @@ Animator::Animator(const char* path, Model* model) : m_index(0), m_frame(0), m_m
     speed = Settings::d_animSpeed;
 }
 
-void Animator::update()
+void RE::Animator::update()
 {
     m_frame += GetFrameTime() * speed;
     m_frame = fmodf(m_frame, m_modelAnim[m_index].keyframeCount);
@@ -22,12 +22,12 @@ void Animator::update()
     UpdateModelAnimation(*m_model, m_modelAnim[m_index], m_frame);
 }
 
-void Animator::setCurrent(int index)
+void RE::Animator::setCurrent(int index)
 {
     m_index = index;
 }
 
-void Animator::setCurrent(const char* name)
+void RE::Animator::setCurrent(const char* name)
 {
     for (size_t i = 0; i < m_count; i++)
     {
@@ -40,7 +40,7 @@ void Animator::setCurrent(const char* name)
     m_index = 0;
 }
 
-void Animator::gui()
+void RE::Animator::gui()
 { 
     static const char* current = m_animName[0];
     if (m_count <= 0)

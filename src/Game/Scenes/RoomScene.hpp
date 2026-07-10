@@ -1,7 +1,7 @@
 #pragma once
 #include <RayEngine.hpp>
 
-class RoomScene : public SceneSkeleton
+class RoomScene : public RE::SceneSkeleton
 {
 public :
 	RoomScene();

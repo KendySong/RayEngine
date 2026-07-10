@@ -2,18 +2,22 @@
 
 #include <raylib/raylib.h>
 #include <raylib/raymath.h>
+#include "Transform.hpp"
 
-
-class GameObject
+namespace RE
 {
-public :
-    GameObject();
-    void draw();
-    void gui();
+    class GameObject
+    {
+    public:
+        GameObject();
+        void draw();
+        void drawWires();
+        void gui();
 
-    Model* model;
-    Transform transform;
+        Model* model;
+        RE::Transform transform;
 
-private :
-
-};
+    private:
+        void updateTransform();
+    };
+}

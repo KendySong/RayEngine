@@ -23,7 +23,7 @@ void Window::run()
 	DefaultScene scene;
 	RoomScene roomScene;
 
-	SceneManager& sceneManager = SceneManager::instance();
+	RE::SceneManager& sceneManager = RE::SceneManager::instance();
 	
 	sceneManager.scenes["default"] = &scene;
 	sceneManager.scenes["room"] = &roomScene;
@@ -31,12 +31,12 @@ void Window::run()
 	sceneManager.setCurrent("default");
 	
 	//Init default keys setup
-	Input::instance();
+	RE::Input::instance();
 	while (!WindowShouldClose())
 	{
 		//Update
 		sceneManager.current->update();
-		Input::instance().executeNavigation();
+		RE::Input::instance().executeNavigation();
 		
 		//Render
 		BeginDrawing();

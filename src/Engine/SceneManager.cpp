@@ -1,13 +1,13 @@
 #include "SceneManager.hpp"
 
-SceneManager SceneManager::s_instance;
+RE::SceneManager RE::SceneManager::s_instance;
 
-SceneManager& SceneManager::instance()
+RE::SceneManager& RE::SceneManager::instance()
 {
 	return s_instance;
 }
 
-void SceneManager::setCurrent(std::string sceneName)
+void RE::SceneManager::setCurrent(std::string sceneName)
 {
 	this->current = scenes[sceneName];
 }

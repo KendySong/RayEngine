@@ -4,16 +4,19 @@
 
 #include "Model/SceneSkeleton.hpp"
 
-class SceneManager
+namespace RE
 {
-public :
-	static SceneManager& instance();
-	void setCurrent(std::string sceneName);
+	class SceneManager
+	{
+	public:
+		static SceneManager& instance();
+		void setCurrent(std::string sceneName);
 
-	std::unordered_map<std::string, SceneSkeleton*> scenes;
-	SceneSkeleton* current;
+		std::unordered_map<std::string, SceneSkeleton*> scenes;
+		SceneSkeleton* current;
 
-private :
-	SceneManager() = default;
-	static SceneManager s_instance;
-};
+	private:
+		SceneManager() = default;
+		static SceneManager s_instance;
+	};
+}

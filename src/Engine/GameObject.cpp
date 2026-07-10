@@ -3,29 +3,38 @@
 #include <ImGui/rlImGui.h>
 #include <Imgui/imgui.h>
 
-GameObject::GameObject()
+RE::GameObject::GameObject()
 {
-    transform.translation   = { 0, 0, 0 };
-    transform.rotation      = QuaternionIdentity();
+    transform.position      = { 0, 0, 0 };
+    transform.rotation      = b3Quat_identity;
     transform.scale         = { 1, 1, 1 };
 }
 
-void GameObject::draw()
+void RE::GameObject::draw()
 {
-    Matrix translate = MatrixTranslate(transform.translation.x, transform.translation.y, transform.translation.z);
-    //Matrix rotation = QuaternionToMatrix(QuaternionFromEuler(transform.rotation.x, transform.rotation.y, transform.rotation.z));
-    Matrix rotation = QuaternionToMatrix(transform.rotation);
-    Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
-    
-    Matrix world = scale * rotation * translate;
-    model->transform = world;
-
+    this->updateTransform();
     DrawModel(*model, { 0, 0, 0 }, 1, WHITE);
 }
 
-void GameObject::gui()
+void RE::GameObject::drawWires()
 {
-    ImGui::DragFloat3("Position", &transform.translation.x, 0.1);
-    ImGui::DragFloat3("Rotation", &transform.rotation.x, 0.01);
+    this->updateTransform();
+    DrawModelWires(*model, { 0, 0, 0 }, 1, WHITE);
+}
+
+void RE::GameObject::updateTransform()
+{
+    Matrix translate = MatrixTranslate(transform.position.x, transform.position.y, transform.position.z);
+    Matrix rotation = QuaternionToMatrix({ transform.rotation.v.x, transform.rotation.v.y, transform.rotation.v.z, transform.rotation.s });
+    Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
+
+    Matrix world = scale * rotation * translate;
+    model->transform = world;
+}
+
+void RE::GameObject::gui()
+{
+    ImGui::DragFloat3("Position", &transform.position.x, 0.1);
+    //ImGui::DragFloat3("Rotation", &transform.rotation.x, 0.01);
     ImGui::DragFloat3("Scale", &transform.scale.x, 0.01);
 }

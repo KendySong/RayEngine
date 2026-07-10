@@ -4,19 +4,22 @@
 
 #include "Model/ShaderSkeleton.hpp"
 
-class Light : public ShaderSkeleton
+namespace RE
 {
-public :
-	Light() = default;
-	Light(const char* vsPath, const char* fsPath);
+	class Light : public RE::ShaderSkeleton
+	{
+	public:
+		Light() = default;
+		Light(const char* vsPath, const char* fsPath);
 
-	void updateUniform() override;
-	void gui() override;
-	
-	Vector3 color;
-	Vector3 position;
+		void updateUniform() override;
+		void gui() override;
 
-private : 
-	int u_color;
-	int u_position;
-};
+		Vector3 color;
+		Vector3 position;
+
+	private:
+		int u_color;
+		int u_position;
+	};
+}

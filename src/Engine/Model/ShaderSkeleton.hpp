@@ -1,16 +1,19 @@
 #pragma once
 #include <raylib/raylib.h>
 
-class ShaderSkeleton
+namespace RE
 {
-public :
-	ShaderSkeleton() = default;
-	virtual ~ShaderSkeleton();
+	class ShaderSkeleton
+	{
+	public:
+		ShaderSkeleton() = default;
+		virtual ~ShaderSkeleton();
 
-	virtual void updateUniform();
-	virtual void gui();
+		virtual void updateUniform();
+		virtual void gui();
 
-	Shader shader;
+		Shader shader;
 
-private :
-};
+	private:
+	};
+}

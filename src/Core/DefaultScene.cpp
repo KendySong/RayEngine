@@ -1,7 +1,7 @@
 #include "DefaultScene.hpp"
 #include "../Settings.hpp"
 
-DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManager::instance())
+DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
 {
 	//Create world
 	b3WorldDef worldDef = b3DefaultWorldDef();
@@ -34,10 +34,10 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 	b3CreateHullShape(m_bodyID2, &boxShapeDef, &dynamicBox.base);
 
 	//Configure the shaders
-	Light* light = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
+	RE::Light* light = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 	light->position = { -20, 0, 0 };
 
-	Light* lightRed = new Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
+	RE::Light* lightRed = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 	lightRed->position = { -20, 13, -12 };
 	lightRed->color = { 1, 0, 0 };
 
@@ -56,19 +56,19 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 	m_assetManager.setMaterialShader("robot",  m_assetManager.shader["light"]->shader);
 	m_assetManager.setMaterialShader("turret", m_assetManager.shader["lightRed"]->shader);
 
-	m_assetManager.animator["robot"] = Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
+	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
 
 	//Setup game object
 	m_castle.model = &m_assetManager.modele["castle"];
-	m_castle.transform.translation = { 40, 0, 0 };
+	m_castle.transform.position = { 40, 0, 0 };
 
 	m_robot.model = &m_assetManager.modele["robot"];
-	m_robot.transform.translation = { 40, 0, 20 };
+	m_robot.transform.position = { 40, 0, 20 };
 	m_robot.transform.rotation = { 0, -PI / 2, 0 };
 	m_robot.transform.scale = { 0.05, 0.05, 0.05 };
 
 	m_turret.model = &m_assetManager.modele["turret"];
-	m_turret.transform.translation = { 20, 0, -25 };
+	m_turret.transform.position = { 20, 0, -25 };
 	m_turret.transform.rotation = { 0, 0, 0 };
 
 	m_cube1.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
@@ -78,10 +78,10 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(AssetManage
 
 	m_ground.model = new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1)));
 	m_ground.model->materials[0].shader = m_assetManager.shader["light"]->shader;
-	m_ground.transform.translation = { 0, 0, 0 };
+	m_ground.transform.position = { 0, 0, 0 };
 
 	//Define key with actions
-	Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
+	RE::Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
 		b3Body_ApplyLinearImpulseToCenter(m_bodyID1, { 0, 10, 0 }, true);
 	};
 }
@@ -100,15 +100,11 @@ void DefaultScene::update()
 
 	//Physics
 	b3World_Step(m_worldID, dt, Settings::subStepCount);
-	b3Vec3 p1 = b3Body_GetPosition(m_bodyID1);
-	b3Quat r1 = b3Body_GetRotation(m_bodyID1);
-	m_cube1.transform.translation = { p1.x, p1.y, p1.z };
-	m_cube1.transform.rotation = { r1.v.x, r1.v.y, r1.v.z, r1.s };
+	m_cube1.transform.position = b3Body_GetPosition(m_bodyID1);
+	m_cube1.transform.rotation = b3Body_GetRotation(m_bodyID1);
 
-	b3Vec3 p2 = b3Body_GetPosition(m_bodyID2);
-	b3Quat r2 = b3Body_GetRotation(m_bodyID2);
-	m_cube2.transform.translation = { p2.x, p2.y, p2.z };
-	m_cube2.transform.rotation = { r2.v.x, r2.v.y, r2.v.z, r2.s };
+	m_cube2.transform.position = b3Body_GetPosition(m_bodyID2);
+	m_cube2.transform.rotation = b3Body_GetRotation(m_bodyID2);
 }
 
 void DefaultScene::render()

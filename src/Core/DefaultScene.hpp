@@ -18,7 +18,7 @@
 #include "../Engine/Light.hpp"
 
 
-class DefaultScene : public SceneSkeleton
+class DefaultScene : public RE::SceneSkeleton
 {
 public :
 	DefaultScene();
@@ -29,16 +29,16 @@ public :
 
 private :
 	View m_view;
-	AssetManager& m_assetManager;
+	RE::AssetManager& m_assetManager;
 
-	GameObject m_castle;
-	GameObject m_robot;
-	GameObject m_turret;
+	RE::GameObject m_castle;
+	RE::GameObject m_robot;
+	RE::GameObject m_turret;
 
 
-	GameObject m_cube1;
-	GameObject m_cube2;
-	GameObject m_ground;
+	RE::GameObject m_cube1;
+	RE::GameObject m_cube2;
+	RE::GameObject m_ground;
 
 	//Physics
 	b3WorldId m_worldID;

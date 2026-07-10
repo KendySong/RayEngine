@@ -7,24 +7,27 @@
 #include "../Core/View.hpp"
 #include "KeyEvent.hpp"
 
-class Input
+namespace RE
 {
-public :
-	static Input& instance();
-	void executeNavigation();
-	void executeViewDrag2D();
-	void executeViewFPS();
+	class Input
+	{
+	public:
+		static Input& instance();
+		void executeNavigation();
+		void executeViewDrag2D();
+		void executeViewFPS();
 
-	//input-function binding foreach situation
-	KeyEvent navigation;
-	KeyEvent viewDrag2D;
-	KeyEvent viewFPS;
+		//input-function binding foreach situation
+		KeyEvent navigation;
+		KeyEvent viewDrag2D;
+		KeyEvent viewFPS;
 
 
 
-private:
-	Input();
-	void executeKeyEvent(const KeyEvent& keyEvent);
+	private:
+		Input();
+		void executeKeyEvent(const KeyEvent& keyEvent);
 
-	static Input s_instance;
-};
+		static Input s_instance;
+	};
+}

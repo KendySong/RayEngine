@@ -54,7 +54,7 @@ void View::update()
 	switch (mode)
 	{
 	case ViewMode::Drag2D:	
-		Input::instance().executeViewDrag2D();
+		RE::Input::instance().executeViewDrag2D();
 		if (wheel != 0)
 		{
 			Vector2 mouseWorldPos = GetScreenToWorld2D(GetMousePosition(), camera2D);
@@ -69,7 +69,7 @@ void View::update()
 
 	case ViewMode::FPS:
 		this->updateDirection();
-		Input::instance().executeViewFPS();
+		RE::Input::instance().executeViewFPS();
 		camera3D.target = camera3D.position + m_direction;	
 		break;
 
@@ -129,34 +129,34 @@ void View::setupDefaultInput(ViewMode mode)
 	switch (mode)
 	{
 	case ViewMode::Drag2D:
-		Input::instance().viewDrag2D.hold[MOUSE_BUTTON_RIGHT] = [&]() ->void {
+		RE::Input::instance().viewDrag2D.hold[MOUSE_BUTTON_RIGHT] = [&]() ->void {
 			Vector2 mouseDelta = GetMouseDelta() * m_sensitivity;
 			camera2D.target -= mouseDelta / camera2D.zoom;
 		};
 		break;
 
 	case ViewMode::FPS:
-		Input::instance().viewFPS.hold[KEY_W] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_W] = [&]() -> void {
 			this->camera3D.position += m_direction * m_speed * GetFrameTime();
 		};
 
-		Input::instance().viewFPS.hold[KEY_S] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_S] = [&]() -> void {
 			camera3D.position -= m_direction * m_speed * GetFrameTime();
 		};
 
-		Input::instance().viewFPS.hold[KEY_A] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_A] = [&]() -> void {
 			camera3D.position += Math::normalize(Math::cross(camera3D.up, m_direction)) * m_speed * GetFrameTime();
 		};
 
-		Input::instance().viewFPS.hold[KEY_D] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_D] = [&]() -> void {
 			camera3D.position -= Math::normalize(Math::cross(camera3D.up, m_direction)) * m_speed * GetFrameTime();
 		};
 
-		Input::instance().viewFPS.hold[KEY_SPACE] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_SPACE] = [&]() -> void {
 			camera3D.position.y += m_speed * GetFrameTime();
 		};
 
-		Input::instance().viewFPS.hold[KEY_LEFT_SHIFT] = [&]() -> void {
+		RE::Input::instance().viewFPS.hold[KEY_LEFT_SHIFT] = [&]() -> void {
 			camera3D.position.y -= m_speed * GetFrameTime();
 		};
 		break;
