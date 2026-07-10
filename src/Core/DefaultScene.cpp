@@ -1,6 +1,8 @@
 #include "DefaultScene.hpp"
 #include "../Settings.hpp"
 
+#include <iostream>
+
 DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
 {
 	//Create world
@@ -35,7 +37,7 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 
 	//Configure the shaders
 	RE::Light* light = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
-	light->position = { -20, 0, 0 };
+	light->position = { -20, 15, 0 };
 
 	RE::Light* lightRed = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
 	lightRed->position = { -20, 13, -12 };
@@ -64,12 +66,11 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 
 	m_robot.model = &m_assetManager.modele["robot"];
 	m_robot.transform.position = { 40, 0, 20 };
-	m_robot.transform.rotation = { 0, -PI / 2, 0 };
+	m_robot.transform.rotation = b3MakeQuatFromAxisAngle({0, 1, 0}, -PI / 2);
 	m_robot.transform.scale = { 0.05, 0.05, 0.05 };
 
 	m_turret.model = &m_assetManager.modele["turret"];
 	m_turret.transform.position = { 20, 0, -25 };
-	m_turret.transform.rotation = { 0, 0, 0 };
 
 	m_cube1.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
 	m_cube2.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
@@ -83,6 +84,12 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 	//Define key with actions
 	RE::Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
 		b3Body_ApplyLinearImpulseToCenter(m_bodyID1, { 0, 10, 0 }, true);
+	};
+
+	RE::Input::instance().viewFPS.hold[KEY_Q] = [&]() -> void {
+
+		m_turret.transform.rotation = m_turret.transform.rotation * b3MakeQuatFromAxisAngle({0, 1, 0}, GetFrameTime());
+		m_castle.transform.rotation = m_castle.transform.rotation * b3MakeQuatFromAxisAngle({ 0, 1, 0 }, GetFrameTime());
 	};
 }
 

@@ -213,3 +213,8 @@ Vector3 operator-(const Vector3& v)
 {
 	return { -v.x, -v.y, -v.z };
 }
+
+b3Quat  operator*(const b3Quat& a, const b3Quat& b)
+{
+	return b3MulQuat(a, b);
+}

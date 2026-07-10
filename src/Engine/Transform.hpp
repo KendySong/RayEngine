@@ -1,5 +1,6 @@
 #pragma once
 #include <box3d/box3d.h>
+#include "../Core/Math.hpp"
 
 namespace RE
 {

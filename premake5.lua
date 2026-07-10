@@ -9,8 +9,16 @@ project "RayEngine"
     language "C++"
     location "build"    
 
-    defines "SFML_STATIC"
-    files { "src/**.cpp", "src/**.hpp", "src/**.h", "libraries/include/ImGui/**.cpp", "assets/**.*", "src/shaders/**.*" }
+    files { 
+        "src/**.cpp", 
+        "src/**.hpp", 
+        "src/**.h", 
+        "libraries/include/ImGui/**.cpp", 
+        "libraries/include/box3d/**.h", 
+        "libraries/include/box3d/**.c",
+        "assets/**.*", 
+        "src/shaders/**.*"
+    }
 
     includedirs { "libraries/*", "*"}
     libdirs "libraries/lib"

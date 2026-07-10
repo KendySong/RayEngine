@@ -19,5 +19,7 @@ namespace RE
 
     private:
         void updateTransform();
+
+        Vector3 m_euler;
     };
 }

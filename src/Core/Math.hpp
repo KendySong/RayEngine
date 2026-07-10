@@ -7,6 +7,7 @@
 #include <math.h>
 #include <Raylib/raylib.h>
 #include <Raylib/raymath.h>
+#include <box3d/box3d.h>
 
 class Math
 {
@@ -47,3 +48,4 @@ public :
 Vector2 operator*(float a, const Vector2& v);
 Vector3 operator*(float a, const Vector3& v);
 Vector3 operator-(const Vector3& v);
+b3Quat  operator*(const b3Quat& a, const b3Quat& b);

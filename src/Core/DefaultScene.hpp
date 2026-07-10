@@ -12,6 +12,7 @@
 
 #include <RayEngine.hpp>
 #include <box3d/box3d.h>
+#include <box3d/math_functions.h>
 
 #include "View.hpp"
 #include "Math.hpp"

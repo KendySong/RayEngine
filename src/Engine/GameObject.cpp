@@ -5,9 +5,11 @@
 
 RE::GameObject::GameObject()
 {
-    transform.position      = { 0, 0, 0 };
+    transform.position      = b3Vec3_zero;
     transform.rotation      = b3Quat_identity;
-    transform.scale         = { 1, 1, 1 };
+    transform.scale         = b3Vec3_one;
+    
+    m_euler = Vector3(0);
 }
 
 void RE::GameObject::draw()
@@ -23,7 +25,7 @@ void RE::GameObject::drawWires()
 }
 
 void RE::GameObject::updateTransform()
-{
+{ 
     Matrix translate = MatrixTranslate(transform.position.x, transform.position.y, transform.position.z);
     Matrix rotation = QuaternionToMatrix({ transform.rotation.v.x, transform.rotation.v.y, transform.rotation.v.z, transform.rotation.s });
     Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
@@ -35,6 +37,9 @@ void RE::GameObject::updateTransform()
 void RE::GameObject::gui()
 {
     ImGui::DragFloat3("Position", &transform.position.x, 0.1);
-    //ImGui::DragFloat3("Rotation", &transform.rotation.x, 0.01);
-    ImGui::DragFloat3("Scale", &transform.scale.x, 0.01);
+    if (ImGui::DragFloat3("Rotation", &m_euler.x, 0.01))
+    {   
+        transform.rotation = b3MakeQuatFromAxisAngle(b3Vec3_axisX, m_euler.x) * b3MakeQuatFromAxisAngle(b3Vec3_axisY, m_euler.y) * b3MakeQuatFromAxisAngle(b3Vec3_axisZ, m_euler.z);
+    }
+    ImGui::DragFloat3("Scale", &transform.scale.x, 0.01);  
 }
