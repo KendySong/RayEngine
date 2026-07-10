@@ -21,5 +21,5 @@ bool				Settings::editMode			= false;
 const float			Settings::d_animSpeed		= 100;
 
 //Physics
-const b3Vec3		Settings::g					= { 0, -9.81, 0 };
+const b3Vec3		Settings::g					= { 0, -15, 0 };
 const int			Settings::subStepCount		= 4;

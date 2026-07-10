@@ -31,5 +31,5 @@ void main()
     // final color is the color from the texture
     //    times the tint color (colDiffuse)
     //    times the fragment color (interpolated vertex color)
-    finalColor = vec4(vec3(intensity) * color, 1) * texelColor * colDiffuse * fragColor;
+    finalColor = vec4(max(vec3(intensity) * color, vec3(0.2)) * color, 1) * texelColor * colDiffuse * fragColor;
 }

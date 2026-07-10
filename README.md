@@ -17,6 +17,7 @@ premake5 vs2026
 ## Used libraries
 - Raylib
 - RayGui
+- Box3D
 - ImGui
 
 ## Scene management

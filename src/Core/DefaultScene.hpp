@@ -38,9 +38,11 @@ private :
 
 	GameObject m_cube1;
 	GameObject m_cube2;
+	GameObject m_ground;
 
 	//Physics
 	b3WorldId m_worldID;
 	b3BodyId  m_bodyID1;
 	b3BodyId  m_bodyID2;
+	b3BodyId  m_groundID;
 };

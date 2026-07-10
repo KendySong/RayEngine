@@ -13,7 +13,8 @@ GameObject::GameObject()
 void GameObject::draw()
 {
     Matrix translate = MatrixTranslate(transform.translation.x, transform.translation.y, transform.translation.z);
-    Matrix rotation = MatrixRotateX(transform.rotation.x) * MatrixRotateY(transform.rotation.y) * MatrixRotateZ(transform.rotation.z);
+    //Matrix rotation = QuaternionToMatrix(QuaternionFromEuler(transform.rotation.x, transform.rotation.y, transform.rotation.z));
+    Matrix rotation = QuaternionToMatrix(transform.rotation);
     Matrix scale = MatrixScale(transform.scale.x, transform.scale.y, transform.scale.z);
     
     Matrix world = scale * rotation * translate;
