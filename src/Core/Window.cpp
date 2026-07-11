@@ -21,12 +21,12 @@ void Window::run()
 {
 	//Load scenes
 	DefaultScene scene;
-	RoomScene roomScene;
+	SandboxScene sandbox;
 
 	RE::SceneManager& sceneManager = RE::SceneManager::instance();
 	
 	sceneManager.scenes["default"] = &scene;
-	sceneManager.scenes["room"] = &roomScene;
+	sceneManager.scenes["sandbox"] = &sandbox;
 
 	sceneManager.setCurrent("default");
 	

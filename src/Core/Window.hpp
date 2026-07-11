@@ -7,7 +7,7 @@
 #include <Imgui/imgui.h>
 
 #include "DefaultScene.hpp"
-#include "../Game/Scenes/RoomScene.hpp"
+#include "../Game/Scenes/SandboxScene.hpp"
 #include "../Engine/SceneManager.hpp"
 
 class Window

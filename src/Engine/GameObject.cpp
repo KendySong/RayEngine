@@ -5,11 +5,26 @@
 
 RE::GameObject::GameObject()
 {
+    isStatic = false;
     transform.position      = b3Vec3_zero;
     transform.rotation      = b3Quat_identity;
     transform.scale         = b3Vec3_one;
     
     m_euler = Vector3(0);
+}
+
+void RE::GameObject::updatePhysics()
+{
+    if (isStatic)
+    {
+        this->transform.position = b3Body_GetPosition(id);
+        this->transform.rotation = b3Body_GetRotation(id);
+    }
+}
+
+void setBodyType()
+{
+
 }
 
 void RE::GameObject::draw()
@@ -36,6 +51,7 @@ void RE::GameObject::updateTransform()
 
 void RE::GameObject::gui()
 {
+    
     ImGui::DragFloat3("Position", &transform.position.x, 0.1);
     if (ImGui::DragFloat3("Rotation", &m_euler.x, 0.01))
     {   

@@ -1,5 +1,6 @@
 #pragma once
 
+
 namespace RE
 {
 	class SceneSkeleton

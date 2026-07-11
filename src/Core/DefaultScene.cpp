@@ -25,6 +25,8 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 	bodyDef.position = { 0, 4, 0 };
 	m_bodyID1 = b3CreateBody(m_worldID, &bodyDef);
 
+	
+
 	bodyDef.position = { 1, 10, 0 };
 	m_bodyID2 = b3CreateBody(m_worldID, &bodyDef);
 
@@ -88,9 +90,12 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 
 	RE::Input::instance().viewFPS.hold[KEY_Q] = [&]() -> void {
 
-		m_turret.transform.rotation = m_turret.transform.rotation * b3MakeQuatFromAxisAngle({0, 1, 0}, GetFrameTime());
+		m_turret.transform.rotation = m_turret.transform.rotation * b3MakeQuatFromAxisAngle({ 0, 1, 0 }, GetFrameTime());
 		m_castle.transform.rotation = m_castle.transform.rotation * b3MakeQuatFromAxisAngle({ 0, 1, 0 }, GetFrameTime());
 	};
+
+	//Init framebuffer for pixelised effect
+	m_pixelised = RE::FrameBuffer(640, 360);
 }
 
 void DefaultScene::update()
@@ -112,23 +117,37 @@ void DefaultScene::update()
 
 	m_cube2.transform.position = b3Body_GetPosition(m_bodyID2);
 	m_cube2.transform.rotation = b3Body_GetRotation(m_bodyID2);
+
+
 }
 
 void DefaultScene::render()
 {
-	ClearBackground({ 30, 30, 30 });
+	//Draw on the texture
+	BeginTextureMode(m_pixelised.target);
+		ClearBackground({ 30, 30, 30 });
+		BeginMode3D(m_view.camera3D);
+			m_castle.draw();
+			m_robot.draw();
+			m_turret.draw();
+			m_cube1.draw();
+			m_cube2.draw();
+			m_ground.draw();
+			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
+			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
+			DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);
+		EndMode3D();
+	EndTextureMode();
 
-	BeginMode3D(m_view.camera3D);	
-		m_castle.draw();
-		m_robot.draw();
-		m_turret.draw();
-		m_cube1.draw();
-		m_cube2.draw();
-		m_ground.draw();
-		DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
-		DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
-		DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);
-	EndMode3D();
+	//Render texture
+	ClearBackground({ 30, 30, 30 });
+	DrawTexturePro(m_pixelised.target.texture, 
+		{ 0, 0, (float)m_pixelised.width,  -(float)m_pixelised.height }, 
+		{ 0, 0, (float)Settings::width, (float)Settings::height }, 
+		Vector2(0, 0), 
+		0, 
+		WHITE
+	);
 }
 
 void DefaultScene::gui()

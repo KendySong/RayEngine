@@ -31,6 +31,7 @@ public :
 private :
 	View m_view;
 	RE::AssetManager& m_assetManager;
+	RE::FrameBuffer m_pixelised;
 
 	RE::GameObject m_castle;
 	RE::GameObject m_robot;

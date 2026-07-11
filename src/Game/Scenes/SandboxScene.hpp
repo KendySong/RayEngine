@@ -1,10 +1,10 @@
 #pragma once
 #include <RayEngine.hpp>
 
-class RoomScene : public RE::SceneSkeleton
+class SandboxScene : public RE::SceneSkeleton
 {
 public :
-	RoomScene();
+	SandboxScene();
 	void update() override;
 	void render() override;
 	void gui() override;
