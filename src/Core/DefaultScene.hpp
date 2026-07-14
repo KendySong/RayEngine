@@ -17,7 +17,6 @@
 
 #include "View.hpp"
 #include "Math.hpp"
-#include "../Engine/Light.hpp"
 
 class DefaultScene : public RE::SceneSkeleton
 {
@@ -37,10 +36,13 @@ private :
 	RE::GameObject m_robot;
 	RE::GameObject m_turret;
 
-
 	RE::GameObject m_cube1;
 	RE::GameObject m_cube2;
 	RE::GameObject m_cube3;
 	RE::GameObject m_ground;
 	std::vector<RE::GameObject> m_cubeGroup;
+
+	RE::DirectionalLight* p_dlight;
+	RE::PointLight* p_light;
+	RE::PointLight* p_lightRed;
 };

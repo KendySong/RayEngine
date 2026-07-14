@@ -6,11 +6,11 @@
 
 namespace RE
 {
-	class Light : public RE::ShaderSkeleton
+	class PointLight : public RE::ShaderSkeleton
 	{
 	public:
-		Light() = default;
-		Light(const char* vsPath, const char* fsPath);
+		PointLight() = default;
+		PointLight(const char* vsPath, const char* fsPath, Vector3 position, Color color = WHITE);
 
 		void updateUniform() override;
 		void gui() override;

@@ -6,5 +6,6 @@
 #include "Engine/Model/ShaderSkeleton.hpp"
 #include "Engine/Model/SceneSkeleton.hpp"
 #include "Engine/Animator.hpp"
-#include "Engine/Light.hpp"
+#include "Engine/PointLight.hpp"
+#include "Engine/DirectionalLight.hpp"
 #include "Engine/FrameBuffer.hpp"

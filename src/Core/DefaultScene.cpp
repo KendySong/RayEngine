@@ -1,8 +1,6 @@
 #include "DefaultScene.hpp"
 #include "../Settings.hpp"
 
-#include <iostream>
-
 DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
 {
 	b3ShapeDef boxShapeDef = b3DefaultShapeDef();
@@ -10,12 +8,9 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	boxShapeDef.baseMaterial.friction = 0.1f;
 
 	//Configure the shaders
-	RE::Light* light = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
-	light->position = { -20, 15, 0 };
-
-	RE::Light* lightRed = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
-	lightRed->position = { -20, 13, -12 };
-	lightRed->color = { 1, 0, 0 };
+	p_light = new RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 15, 0 });
+	p_lightRed = new RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 13, -12 }, { 255, 0, 0 });
+	p_dlight = new RE::DirectionalLight("../assets/shaders/lighting.vs", "../assets/shaders/lighting.fs", { -10, 10, 0 }, { 0, 0, 0 });
 
 	//Load model, texture, shader, animation and configure assets
 	m_assetManager.modele ["castle"]	= LoadModel("../assets/models/castle.obj");
@@ -23,14 +18,17 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	m_assetManager.modele ["turret"]	= LoadModel("../assets/models/turret.obj");
 	m_assetManager.texture["castle"]	= LoadTexture("../assets/textures/castle_diffuse.png");
 	m_assetManager.texture["turret"]	= LoadTexture("../assets/textures/turret_diffuse.png");
-	m_assetManager.shader ["light"]		= light;
-	m_assetManager.shader["lightRed"]	= lightRed;
+
+	m_assetManager.shader ["light"]		= p_light;
+	m_assetManager.shader ["lightRed"]	= p_lightRed;
+	m_assetManager.shader["dlight"]		= p_dlight;
 
 	m_assetManager.setModeleTexture( "castle", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["castle"]);
 	m_assetManager.setModeleTexture( "turret", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["turret"]);
-	m_assetManager.setMaterialShader("castle", m_assetManager.shader["light"]->shader);
-	m_assetManager.setMaterialShader("robot",  m_assetManager.shader["light"]->shader);
-	m_assetManager.setMaterialShader("turret", m_assetManager.shader["lightRed"]->shader);
+
+	m_assetManager.setMaterialShader("castle", p_dlight->shader);
+	m_assetManager.setMaterialShader("robot",  p_light->shader);
+	m_assetManager.setMaterialShader("turret", p_light->shader);
 
 	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
 
@@ -49,19 +47,19 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	//Setup physics game objects
 	m_ground = RE::GameObject(world, { 0, -1, 0 }, b3Quat_identity, b3_staticBody);
 	m_ground.loadModel(new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1))), boxShapeDef, { 100, 0.1, 100 });
-	m_ground.setShader(m_assetManager.shader["light"]->shader);
+	m_ground.setShader(p_dlight->shader);
 
 	m_cube1 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube1.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
-	m_cube1.setShader(m_assetManager.shader["lightRed"]->shader);
+	m_cube1.setShader(p_dlight->shader);
 
 	m_cube2 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube2.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
-	m_cube2.setShader(m_assetManager.shader["lightRed"]->shader);
+	m_cube2.setShader(p_lightRed->shader);
 
 	m_cube3 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube3.loadModel(new Model(LoadModelFromMesh(GenMeshCube(5, 5, 5))), boxShapeDef, { 5, 5, 5 });
-	m_cube3.setShader(m_assetManager.shader["lightRed"]->shader);
+	m_cube3.setShader(p_lightRed->shader);
 	
 	m_cubeGroup.reserve(15);
 	b3Vec3 cubeSize = { 2, 2, 2 };
@@ -70,7 +68,7 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	{	
 		m_cubeGroup.emplace_back(RE::GameObject(world, { 0, cubeSize.y * i, 0 }, b3Quat_identity, b3_dynamicBody));
 		m_cubeGroup[i].loadModel(miniCube, boxShapeDef);
-		m_cubeGroup[i].setShader(m_assetManager.shader["lightRed"]->shader);
+		m_cubeGroup[i].setShader(p_lightRed->shader);
 	}
 
 	//Define key with actions
@@ -89,15 +87,16 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 
 void DefaultScene::update()
 {
-	float dt = GetFrameTime();
+	float dt = GetFrameTime();	
 	if (!Settings::editMode)
 	{
 		m_view.update();
 	}
 		
-	m_assetManager.shader["light"]->updateUniform();
-	m_assetManager.shader["lightRed"]->updateUniform();
 	m_assetManager.animator["robot"].update();
+	p_light->updateUniform();
+	p_lightRed->updateUniform();
+	p_dlight->updateUniform();
 
 	//Physics
 	b3World_Step(world, dt, Settings::subStepCount);
@@ -114,7 +113,7 @@ void DefaultScene::render()
 {
 	//Draw on the texture
 	BeginTextureMode(m_pixelised.target);
-		ClearBackground({ 30, 30, 30 });
+		ClearBackground({ 40, 40, 40 });
 		BeginMode3D(m_view.camera3D);
 			m_castle.draw();
 			m_robot.draw();
@@ -127,6 +126,9 @@ void DefaultScene::render()
 			{
 				m_cubeGroup[i].draw();
 			}
+			
+			p_dlight->draw();
+
 			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
 			DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);
@@ -134,7 +136,7 @@ void DefaultScene::render()
 	EndTextureMode();
 
 	//Render texture
-	ClearBackground({ 30, 30, 30 });
+	ClearBackground({ 40, 40, 40 });
 	m_pixelised.render();
 }
 
@@ -153,6 +155,10 @@ void DefaultScene::gui()
 		m_view.gui();
 		ImGui::PushID(1);
 		m_cube3.gui();
+		ImGui::PopID();
+		ImGui::SeparatorText("Directional light");
+		ImGui::PushID(2);
+		p_dlight->gui();
 		ImGui::PopID();
 	ImGui::End();
 }

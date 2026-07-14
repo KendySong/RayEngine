@@ -27,7 +27,6 @@ void main()
     // NOTE: Implement here your fragment shader code
     float intensity = dot(normalize(lightPosition - fragPosition), fragNormal);
 
-
     // final color is the color from the texture
     //    times the tint color (colDiffuse)
     //    times the fragment color (interpolated vertex color)
