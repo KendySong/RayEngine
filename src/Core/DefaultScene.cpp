@@ -5,43 +5,9 @@
 
 DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
 {
-	
-
-
-	//Create ground by putting a boxhull with body def (static by default)
-	b3BodyDef groundBodyDef = b3DefaultBodyDef();
-	groundBodyDef.position = { 0, -11, 0 };
-	m_groundID = b3CreateBody(world, &groundBodyDef);
-	
-	b3BoxHull box = b3MakeBoxHull(50, 10, 50);
-	b3ShapeDef shapeDef = b3DefaultShapeDef();
-
-	b3CreateHullShape(m_groundID, &shapeDef, &box.base);
-
-	//Create dynamic body box 
-	//TODO : Allow control position of dynamic rigidbodies in ImGui with b3_setTransform
-	//TODO : Free system for static bodies without changing the way of move the object with gameObject.transform
-	b3BodyDef bodyDef = b3DefaultBodyDef();
-	bodyDef.type = b3_dynamicBody;
-	bodyDef.position = { 0, 4, 0 };
-	m_bodyID1 = b3CreateBody(world, &bodyDef);
-
-	bodyDef.position = { 1, 10, 0 };
-	m_bodyID2 = b3CreateBody(world, &bodyDef);
-
-	b3BoxHull dynamicBox = b3MakeCubeHull(2.0f);
 	b3ShapeDef boxShapeDef = b3DefaultShapeDef();
 	boxShapeDef.density = 2.0f;
 	boxShapeDef.baseMaterial.friction = 0.1f;
-
-	b3CreateHullShape(m_bodyID1, &boxShapeDef, &dynamicBox.base);
-	b3CreateHullShape(m_bodyID2, &boxShapeDef, &dynamicBox.base);
-
-
-	
-
-
-
 
 	//Configure the shaders
 	RE::Light* light = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
@@ -68,7 +34,6 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 
 	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
 
-
 	//Setup game object
 	m_castle.model = &m_assetManager.modele["castle"];
 	m_castle.transform.position = { 40, 0, 0 };
@@ -81,29 +46,36 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	m_turret.model = &m_assetManager.modele["turret"];
 	m_turret.transform.position = { 20, 0, -25 };
 
+	//Setup physics game objects
+	m_ground = RE::GameObject(world, { 0, -1, 0 }, b3Quat_identity, b3_staticBody);
+	m_ground.loadModel(new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1))), boxShapeDef, { 100, 0.1, 100 });
+	m_ground.setShader(m_assetManager.shader["light"]->shader);
 
+	m_cube1 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
+	m_cube1.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
+	m_cube1.setShader(m_assetManager.shader["lightRed"]->shader);
 
+	m_cube2 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
+	m_cube2.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
+	m_cube2.setShader(m_assetManager.shader["lightRed"]->shader);
 
-
-
-
-
-	m_cube1.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
-	m_cube2.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
+	m_cube3 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
+	m_cube3.loadModel(new Model(LoadModelFromMesh(GenMeshCube(5, 5, 5))), boxShapeDef, { 5, 5, 5 });
+	m_cube3.setShader(m_assetManager.shader["lightRed"]->shader);
 	
-
-
-	m_cube1.model->materials[0].shader = m_assetManager.shader["lightRed"]->shader;
-	m_cube2.model->materials[0].shader = m_assetManager.shader["lightRed"]->shader;
-
-	m_ground.model = new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1)));
-	m_ground.model->materials[0].shader = m_assetManager.shader["light"]->shader;
-	//m_ground.updatePosition({ 0, -1, 0});
-	m_ground.transform.position = { 0, -1, 0 };
+	m_cubeGroup.reserve(15);
+	b3Vec3 cubeSize = { 2, 2, 2 };
+	Model* miniCube = new Model(LoadModelFromMesh(GenMeshCube(cubeSize.x, cubeSize.y, cubeSize.z)));
+	for (size_t i = 0; i < 15; i++)
+	{	
+		m_cubeGroup.emplace_back(RE::GameObject(world, { 0, cubeSize.y * i, 0 }, b3Quat_identity, b3_dynamicBody));
+		m_cubeGroup[i].loadModel(miniCube, boxShapeDef);
+		m_cubeGroup[i].setShader(m_assetManager.shader["lightRed"]->shader);
+	}
 
 	//Define key with actions
 	RE::Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
-		b3Body_ApplyLinearImpulseToCenter(m_bodyID1, { 0, 10, 0 }, true);
+		b3Body_ApplyLinearImpulseToCenter(m_cube3.id, { 0, 10, 0 }, true);
 	};
 
 	RE::Input::instance().viewFPS.hold[KEY_Q] = [&]() -> void {
@@ -113,11 +85,6 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 
 	//Init framebuffer for pixelised effect
 	m_pixelised = RE::FrameBuffer(640, 360);
-
-
-	m_cube3 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
-	m_cube3.loadModel(new Model(LoadModelFromMesh(GenMeshCube(5, 5, 5))), boxShapeDef);
-	m_cube3.setShader(m_assetManager.shader["lightRed"]->shader);
 }
 
 void DefaultScene::update()
@@ -134,13 +101,13 @@ void DefaultScene::update()
 
 	//Physics
 	b3World_Step(world, dt, Settings::subStepCount);
-	m_cube1.transform.position = b3Body_GetPosition(m_bodyID1); //call gameObject.updatePhysics()
-	m_cube1.transform.rotation = b3Body_GetRotation(m_bodyID1);
-
-	m_cube2.transform.position = b3Body_GetPosition(m_bodyID2);
-	m_cube2.transform.rotation = b3Body_GetRotation(m_bodyID2);
-
+	m_cube1.updatePhysics();
+	m_cube2.updatePhysics();
 	m_cube3.updatePhysics();
+	for (size_t i = 0; i < m_cubeGroup.size(); i++)
+	{
+		m_cubeGroup[i].updatePhysics();
+	}
 }
 
 void DefaultScene::render()
@@ -156,6 +123,10 @@ void DefaultScene::render()
 			m_cube2.draw();
 			m_cube3.draw();
 			m_ground.draw();
+			for (size_t i = 0; i < m_cubeGroup.size(); i++)
+			{
+				m_cubeGroup[i].draw();
+			}
 			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
 			DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);
@@ -181,7 +152,7 @@ void DefaultScene::gui()
 		m_castle.gui();
 		m_view.gui();
 		ImGui::PushID(1);
-		m_cube1.gui();
+		m_cube3.gui();
 		ImGui::PopID();
 	ImGui::End();
 }

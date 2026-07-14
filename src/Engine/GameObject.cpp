@@ -3,6 +3,7 @@
 
 #include "GameObject.hpp"
 #include "SceneManager.hpp"
+#include "../Core/Math.hpp"
 #include "../Settings.hpp"
 
 RE::GameObject::GameObject() : transform({ b3Vec3_zero, b3Quat_identity, b3Vec3_one }), m_enabled(true), m_euler(b3Vec3_zero)
@@ -41,10 +42,20 @@ void RE::GameObject::loadModel(Model* model, const b3ShapeDef& def)
             );
     }
 
+    //Dont work if volume is 0
     hull = b3CreateHull(points.data(), points.size(), Settings::maxHullVertexCount);
     b3CreateHullShape(id, &def, hull);
 
     this->updatePhysics();
+}
+
+void RE::GameObject::loadModel(Model* model, const b3ShapeDef& def, const b3Vec3& box)
+{
+    this->model = model;
+   
+    b3Vec3 hbox = box * 0.5;
+    b3BoxHull boxHull = b3MakeBoxHull(hbox.x, hbox.y, hbox.z);
+    b3CreateHullShape(id, &def, &boxHull.base);
 }
 
 void RE::GameObject::setType(b3BodyType type)
@@ -104,10 +115,7 @@ void RE::GameObject::updateTransform()
     model->transform = world;
 }
 
-//1 update position physics
-
-
-void RE::GameObject::gui()                      //2
+void RE::GameObject::gui()
 {
     if (ImGui::DragFloat3("Position", &transform.position.x, 0.1))
     {

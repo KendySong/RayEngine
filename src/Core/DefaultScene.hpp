@@ -42,9 +42,5 @@ private :
 	RE::GameObject m_cube2;
 	RE::GameObject m_cube3;
 	RE::GameObject m_ground;
-
-	//Physics
-	b3BodyId  m_bodyID1;
-	b3BodyId  m_bodyID2;
-	b3BodyId  m_groundID;
+	std::vector<RE::GameObject> m_cubeGroup;
 };
