@@ -23,3 +23,4 @@ const float			Settings::d_animSpeed		= 100;
 //Physics
 const b3Vec3		Settings::g					= { 0, -15, 0 };
 const int			Settings::subStepCount		= 4;
+int					Settings::maxHullVertexCount= 32;

@@ -13,23 +13,36 @@ namespace RE
     {
     public:
         GameObject();
+        GameObject(const b3WorldId& world, const Transform& transform, b3BodyType type);
+        GameObject(const b3WorldId& world, const b3Vec3& position, const b3Quat& rotation, b3BodyType type);
+        void loadModel(Model* model, const b3ShapeDef& def);
+        void setType(b3BodyType type);
         void updatePhysics();
-        void setBodyType();
+        void updatePosition(const b3Vec3& position);
+        
+        void move(const b3Vec3& offset);
+        void rotate(const b3Vec3& angle);
+
+        void setShader(const Shader& shader);
         void draw();
-        void drawWires();  
- 
+        void drawWires();
         void gui();
 
         Model* model;
         RE::Transform transform;
 
-        bool isStatic;
+        
+        b3BodyType type;
         b3BodyId id;
+        b3HullData* hull;
+
 
     private:
         void updateTransform();
+    
+        b3Vec3 m_euler;
 
-        
-        Vector3 m_euler;
+        b3BodyDef m_bodyDef;
+        bool m_enabled;     
     };
 }

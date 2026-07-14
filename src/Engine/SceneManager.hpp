@@ -2,6 +2,8 @@
 #include <string>
 #include <unordered_map>
 
+#include <box3d/box3d.h>
+
 #include "Model/SceneSkeleton.hpp"
 
 namespace RE

@@ -27,6 +27,7 @@ public :
     //Physics
     static const b3Vec3 g;
     static const int subStepCount;
+    static       int maxHullVertexCount;
 
 private :
     Settings();

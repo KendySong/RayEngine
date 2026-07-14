@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <cstdint>
 #include <vector>
 
@@ -17,7 +18,6 @@
 #include "View.hpp"
 #include "Math.hpp"
 #include "../Engine/Light.hpp"
-
 
 class DefaultScene : public RE::SceneSkeleton
 {
@@ -40,10 +40,10 @@ private :
 
 	RE::GameObject m_cube1;
 	RE::GameObject m_cube2;
+	RE::GameObject m_cube3;
 	RE::GameObject m_ground;
 
 	//Physics
-	b3WorldId m_worldID;
 	b3BodyId  m_bodyID1;
 	b3BodyId  m_bodyID2;
 	b3BodyId  m_groundID;

@@ -23,8 +23,7 @@ void Window::run()
 	DefaultScene scene;
 	SandboxScene sandbox;
 
-	RE::SceneManager& sceneManager = RE::SceneManager::instance();
-	
+	RE::SceneManager& sceneManager = RE::SceneManager::instance();	
 	sceneManager.scenes["default"] = &scene;
 	sceneManager.scenes["sandbox"] = &sandbox;
 

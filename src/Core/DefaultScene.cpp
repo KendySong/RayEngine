@@ -3,39 +3,45 @@
 
 #include <iostream>
 
-DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
+DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetManager(RE::AssetManager::instance())
 {
-	//Create world
-	b3WorldDef worldDef = b3DefaultWorldDef();
-	worldDef.gravity = Settings::g;
-	m_worldID = b3CreateWorld(&worldDef);
+	
+
 
 	//Create ground by putting a boxhull with body def (static by default)
 	b3BodyDef groundBodyDef = b3DefaultBodyDef();
-	groundBodyDef.position = { 0, -10, 0 };
-	m_groundID = b3CreateBody(m_worldID, &groundBodyDef);
+	groundBodyDef.position = { 0, -11, 0 };
+	m_groundID = b3CreateBody(world, &groundBodyDef);
 	
 	b3BoxHull box = b3MakeBoxHull(50, 10, 50);
 	b3ShapeDef shapeDef = b3DefaultShapeDef();
+
 	b3CreateHullShape(m_groundID, &shapeDef, &box.base);
 
-	//Create dynamic body box
+	//Create dynamic body box 
+	//TODO : Allow control position of dynamic rigidbodies in ImGui with b3_setTransform
+	//TODO : Free system for static bodies without changing the way of move the object with gameObject.transform
 	b3BodyDef bodyDef = b3DefaultBodyDef();
 	bodyDef.type = b3_dynamicBody;
 	bodyDef.position = { 0, 4, 0 };
-	m_bodyID1 = b3CreateBody(m_worldID, &bodyDef);
-
-	
+	m_bodyID1 = b3CreateBody(world, &bodyDef);
 
 	bodyDef.position = { 1, 10, 0 };
-	m_bodyID2 = b3CreateBody(m_worldID, &bodyDef);
+	m_bodyID2 = b3CreateBody(world, &bodyDef);
 
 	b3BoxHull dynamicBox = b3MakeCubeHull(2.0f);
 	b3ShapeDef boxShapeDef = b3DefaultShapeDef();
 	boxShapeDef.density = 2.0f;
 	boxShapeDef.baseMaterial.friction = 0.1f;
+
 	b3CreateHullShape(m_bodyID1, &boxShapeDef, &dynamicBox.base);
 	b3CreateHullShape(m_bodyID2, &boxShapeDef, &dynamicBox.base);
+
+
+	
+
+
+
 
 	//Configure the shaders
 	RE::Light* light = new RE::Light("../assets/shaders/light.vs", "../assets/shaders/light.fs");
@@ -62,6 +68,7 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 
 	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
 
+
 	//Setup game object
 	m_castle.model = &m_assetManager.modele["castle"];
 	m_castle.transform.position = { 40, 0, 0 };
@@ -74,14 +81,25 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 	m_turret.model = &m_assetManager.modele["turret"];
 	m_turret.transform.position = { 20, 0, -25 };
 
+
+
+
+
+
+
+
 	m_cube1.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
 	m_cube2.model = new Model(LoadModelFromMesh(GenMeshCube(4.0f, 4.0f, 4.0f)));
+	
+
+
 	m_cube1.model->materials[0].shader = m_assetManager.shader["lightRed"]->shader;
 	m_cube2.model->materials[0].shader = m_assetManager.shader["lightRed"]->shader;
 
 	m_ground.model = new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1)));
 	m_ground.model->materials[0].shader = m_assetManager.shader["light"]->shader;
-	m_ground.transform.position = { 0, 0, 0 };
+	//m_ground.updatePosition({ 0, -1, 0});
+	m_ground.transform.position = { 0, -1, 0 };
 
 	//Define key with actions
 	RE::Input::instance().viewFPS.hold[KEY_E] = [&]() -> void {
@@ -89,13 +107,17 @@ DefaultScene::DefaultScene() : m_view(ViewMode::FPS), m_assetManager(RE::AssetMa
 	};
 
 	RE::Input::instance().viewFPS.hold[KEY_Q] = [&]() -> void {
-
 		m_turret.transform.rotation = m_turret.transform.rotation * b3MakeQuatFromAxisAngle({ 0, 1, 0 }, GetFrameTime());
 		m_castle.transform.rotation = m_castle.transform.rotation * b3MakeQuatFromAxisAngle({ 0, 1, 0 }, GetFrameTime());
 	};
 
 	//Init framebuffer for pixelised effect
 	m_pixelised = RE::FrameBuffer(640, 360);
+
+
+	m_cube3 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
+	m_cube3.loadModel(new Model(LoadModelFromMesh(GenMeshCube(5, 5, 5))), boxShapeDef);
+	m_cube3.setShader(m_assetManager.shader["lightRed"]->shader);
 }
 
 void DefaultScene::update()
@@ -111,14 +133,14 @@ void DefaultScene::update()
 	m_assetManager.animator["robot"].update();
 
 	//Physics
-	b3World_Step(m_worldID, dt, Settings::subStepCount);
-	m_cube1.transform.position = b3Body_GetPosition(m_bodyID1);
+	b3World_Step(world, dt, Settings::subStepCount);
+	m_cube1.transform.position = b3Body_GetPosition(m_bodyID1); //call gameObject.updatePhysics()
 	m_cube1.transform.rotation = b3Body_GetRotation(m_bodyID1);
 
 	m_cube2.transform.position = b3Body_GetPosition(m_bodyID2);
 	m_cube2.transform.rotation = b3Body_GetRotation(m_bodyID2);
 
-
+	m_cube3.updatePhysics();
 }
 
 void DefaultScene::render()
@@ -132,6 +154,7 @@ void DefaultScene::render()
 			m_turret.draw();
 			m_cube1.draw();
 			m_cube2.draw();
+			m_cube3.draw();
 			m_ground.draw();
 			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
@@ -141,13 +164,7 @@ void DefaultScene::render()
 
 	//Render texture
 	ClearBackground({ 30, 30, 30 });
-	DrawTexturePro(m_pixelised.target.texture, 
-		{ 0, 0, (float)m_pixelised.width,  -(float)m_pixelised.height }, 
-		{ 0, 0, (float)Settings::width, (float)Settings::height }, 
-		Vector2(0, 0), 
-		0, 
-		WHITE
-	);
+	m_pixelised.render();
 }
 
 void DefaultScene::gui()
@@ -163,5 +180,8 @@ void DefaultScene::gui()
 		m_assetManager.animator["robot"].gui();
 		m_castle.gui();
 		m_view.gui();
+		ImGui::PushID(1);
+		m_cube1.gui();
+		ImGui::PopID();
 	ImGui::End();
 }

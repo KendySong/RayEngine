@@ -1,6 +1,6 @@
 #include "SandboxScene.hpp"
 
-SandboxScene::SandboxScene()
+SandboxScene::SandboxScene() : SceneSkeleton()
 {
 
 }
