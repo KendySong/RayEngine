@@ -11,9 +11,10 @@ Window& Window::instance()
 
 Window::Window()
 {
+	srand(Settings::seed);
 	InitWindow(Settings::width, Settings::height, "RayEngine");
-	rlImGuiSetup(true);
 
+	rlImGuiSetup(true);
 	SetExitKey(KEY_NULL);
 }
 

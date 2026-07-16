@@ -12,6 +12,7 @@ RE::Animator::Animator(const char* path, Model* model) : m_index(0), m_frame(0),
     }
 
     speed = Settings::d_animSpeed;
+    m_current = m_animName[0];
 }
 
 void RE::Animator::update()
@@ -42,7 +43,7 @@ void RE::Animator::setCurrent(const char* name)
 
 void RE::Animator::gui()
 { 
-    static const char* current = m_animName[0];
+    
     if (m_count <= 0)
     {
         return;
@@ -51,14 +52,14 @@ void RE::Animator::gui()
     ImGui::SeparatorText("Animation");
     ImGui::DragFloat("Speed", &speed, 0.1f);
    
-    if (ImGui::BeginCombo("Animations", current))
+    if (ImGui::BeginCombo("Animations", m_current))
     {
         for (int i = 0; i < m_animName.size(); i++)
         {
-            bool selected = (current == m_animName[i]);
+            bool selected = (m_current == m_animName[i]);
             if (ImGui::Selectable(m_animName[i], selected))
             {
-                current = m_animName[i];
+                m_current = m_animName[i];
                 m_index = i;
             }
 

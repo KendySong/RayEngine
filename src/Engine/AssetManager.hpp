@@ -14,7 +14,7 @@ namespace RE
     public:
         static AssetManager& instance();
         std::unordered_map<std::string, Texture2D> texture;
-        std::unordered_map<std::string, Model> modele;
+        std::unordered_map<std::string, Model> model;
         std::unordered_map<std::string, RE::Animator> animator;
         std::unordered_map<std::string, ShaderSkeleton*> shader;
 

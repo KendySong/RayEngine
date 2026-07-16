@@ -138,7 +138,7 @@ Vector2 Math::reflect(const Vector2& a, const Vector2& n)
 Vector3 Math::reflect(const Vector3& a, const Vector3& n)
 {
 	Vector3 normal = Math::normalize(n);
-	return a - n * 2 * Math::dot(a, normal);
+	return a - normal * 2 * Math::dot(a, normal);
 }
 
 float Math::det(const Vector2& a, const Vector2& b)

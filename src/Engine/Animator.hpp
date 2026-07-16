@@ -26,6 +26,7 @@ namespace RE
         float m_frame;
         Model* m_model;
         ModelAnimation* m_modelAnim;
+        const char* m_current;
 
         std::vector<const char*> m_animName;
     };

@@ -11,6 +11,11 @@ RE::GameObject::GameObject() : transform({ b3Vec3_zero, b3Quat_identity, b3Vec3_
 
 }
 
+RE::GameObject::~GameObject()
+{
+    
+}
+
 RE::GameObject::GameObject(const b3WorldId& world, const Transform& transform, b3BodyType type) : transform(transform), m_enabled(true), m_euler(b3Vec3_zero), type(type)
 {
     m_bodyDef = b3DefaultBodyDef();

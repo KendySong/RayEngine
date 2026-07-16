@@ -42,7 +42,7 @@ private :
 	RE::GameObject m_ground;
 	std::vector<RE::GameObject> m_cubeGroup;
 
-	RE::DirectionalLight* p_dlight;
-	RE::PointLight* p_light;
-	RE::PointLight* p_lightRed;
+	RE::DirectionalLight m_dlight;
+	RE::PointLight m_light;
+	RE::PointLight m_lightRed;
 };

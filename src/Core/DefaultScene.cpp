@@ -8,58 +8,58 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	boxShapeDef.baseMaterial.friction = 0.1f;
 
 	//Configure the shaders
-	p_light = new RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 15, 0 });
-	p_lightRed = new RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 13, -12 }, { 255, 0, 0 });
-	p_dlight = new RE::DirectionalLight("../assets/shaders/lighting.vs", "../assets/shaders/lighting.fs", { -10, 10, 0 }, { 0, 0, 0 });
+	m_light = RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 15, 0 });
+	m_lightRed = RE::PointLight("../assets/shaders/blight.vs", "../assets/shaders/blight.fs", { -20, 13, -12 }, { 255, 0, 0 });
+	m_dlight = RE::DirectionalLight("../assets/shaders/lighting.vs", "../assets/shaders/lighting.fs", { -10, 10, 0 }, { 0, 0, 0 });
 
 	//Load model, texture, shader, animation and configure assets
-	m_assetManager.modele ["castle"]	= LoadModel("../assets/models/castle.obj");
-	m_assetManager.modele ["robot"]		= LoadModel("../assets/models/robot.glb");
-	m_assetManager.modele ["turret"]	= LoadModel("../assets/models/turret.obj");
+	m_assetManager.model ["castle"]	= LoadModel("../assets/models/castle.obj");
+	m_assetManager.model ["robot"]		= LoadModel("../assets/models/robot.glb");
+	m_assetManager.model ["turret"]	= LoadModel("../assets/models/turret.obj");
 	m_assetManager.texture["castle"]	= LoadTexture("../assets/textures/castle_diffuse.png");
 	m_assetManager.texture["turret"]	= LoadTexture("../assets/textures/turret_diffuse.png");
 
-	m_assetManager.shader ["light"]		= p_light;
-	m_assetManager.shader ["lightRed"]	= p_lightRed;
-	m_assetManager.shader["dlight"]		= p_dlight;
+	m_assetManager.shader ["light"]		= &m_light;
+	m_assetManager.shader ["lightRed"]	= &m_lightRed;
+	m_assetManager.shader["dlight"]		= &m_dlight;
 
 	m_assetManager.setModeleTexture( "castle", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["castle"]);
 	m_assetManager.setModeleTexture( "turret", MATERIAL_MAP_DIFFUSE, m_assetManager.texture["turret"]);
 
-	m_assetManager.setMaterialShader("castle", p_dlight->shader);
-	m_assetManager.setMaterialShader("robot",  p_light->shader);
-	m_assetManager.setMaterialShader("turret", p_light->shader);
+	m_assetManager.setMaterialShader("castle", m_dlight.shader);
+	m_assetManager.setMaterialShader("robot",  m_light.shader);
+	m_assetManager.setMaterialShader("turret", m_light.shader);
 
-	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.modele["robot"]);
+	m_assetManager.animator["robot"] = RE::Animator("../assets/models/robot.glb", &m_assetManager.model["robot"]);
 
 	//Setup game object
-	m_castle.model = &m_assetManager.modele["castle"];
+	m_castle.model = &m_assetManager.model["castle"];
 	m_castle.transform.position = { 40, 0, 0 };
 
-	m_robot.model = &m_assetManager.modele["robot"];
+	m_robot.model = &m_assetManager.model["robot"];
 	m_robot.transform.position = { 40, 0, 20 };
 	m_robot.transform.rotation = b3MakeQuatFromAxisAngle({0, 1, 0}, -PI / 2);
 	m_robot.transform.scale = { 0.05, 0.05, 0.05 };
 
-	m_turret.model = &m_assetManager.modele["turret"];
+	m_turret.model = &m_assetManager.model["turret"];
 	m_turret.transform.position = { 20, 0, -25 };
 
 	//Setup physics game objects
 	m_ground = RE::GameObject(world, { 0, -1, 0 }, b3Quat_identity, b3_staticBody);
 	m_ground.loadModel(new Model(LoadModelFromMesh(GenMeshPlane(100, 100, 1, 1))), boxShapeDef, { 100, 0.1, 100 });
-	m_ground.setShader(p_dlight->shader);
+	m_ground.setShader(m_dlight.shader);
 
 	m_cube1 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube1.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
-	m_cube1.setShader(p_dlight->shader);
+	m_cube1.setShader(m_dlight.shader);
 
 	m_cube2 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube2.loadModel(new Model(LoadModelFromMesh(GenMeshCube(4, 4, 4))), boxShapeDef);
-	m_cube2.setShader(p_lightRed->shader);
+	m_cube2.setShader(m_lightRed.shader);
 
 	m_cube3 = RE::GameObject(world, RE::transform_default, b3_dynamicBody);
 	m_cube3.loadModel(new Model(LoadModelFromMesh(GenMeshCube(5, 5, 5))), boxShapeDef, { 5, 5, 5 });
-	m_cube3.setShader(p_lightRed->shader);
+	m_cube3.setShader(m_lightRed.shader);
 	
 	m_cubeGroup.reserve(15);
 	b3Vec3 cubeSize = { 2, 2, 2 };
@@ -68,7 +68,7 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	{	
 		m_cubeGroup.emplace_back(RE::GameObject(world, { 0, cubeSize.y * i, 0 }, b3Quat_identity, b3_dynamicBody));
 		m_cubeGroup[i].loadModel(miniCube, boxShapeDef);
-		m_cubeGroup[i].setShader(p_lightRed->shader);
+		m_cubeGroup[i].setShader(m_lightRed.shader);
 	}
 
 	//Define key with actions
@@ -82,7 +82,7 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	};
 
 	//Init framebuffer for pixelised effect
-	m_pixelised = RE::FrameBuffer(640, 360);
+	m_pixelised = RE::FrameBuffer(1920, 1080);
 }
 
 void DefaultScene::update()
@@ -94,9 +94,9 @@ void DefaultScene::update()
 	}
 		
 	m_assetManager.animator["robot"].update();
-	p_light->updateUniform();
-	p_lightRed->updateUniform();
-	p_dlight->updateUniform();
+	m_light.updateUniform();
+	m_lightRed.updateUniform();
+	m_dlight.updateUniform();
 
 	//Physics
 	b3World_Step(world, dt, Settings::subStepCount);
@@ -127,7 +127,7 @@ void DefaultScene::render()
 				m_cubeGroup[i].draw();
 			}
 			
-			p_dlight->draw();
+			m_dlight.draw();
 
 			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
@@ -158,7 +158,7 @@ void DefaultScene::gui()
 		ImGui::PopID();
 		ImGui::SeparatorText("Directional light");
 		ImGui::PushID(2);
-		p_dlight->gui();
+		m_dlight.gui();
 		ImGui::PopID();
 	ImGui::End();
 }

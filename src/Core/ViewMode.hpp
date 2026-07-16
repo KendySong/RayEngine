@@ -3,5 +3,5 @@ enum class ViewMode
 {
 	Drag2D	= 0,
 	FPS		= 1,
-	ORBITAL = 3
+	ORBITAL = 2
 };

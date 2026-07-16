@@ -7,6 +7,7 @@ Settings::Settings()
 
 }
 
+const int			Settings::seed				= time(nullptr);
 const std::uint32_t Settings::width				= 1600;
 const std::uint32_t Settings::height			= 900;
 

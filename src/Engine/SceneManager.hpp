@@ -18,7 +18,8 @@ namespace RE
 		SceneSkeleton* current;
 
 	private:
-		SceneManager() = default;
+		SceneManager();
 		static SceneManager s_instance;
+		std::string currentName;
 	};
 }

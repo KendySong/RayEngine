@@ -9,10 +9,10 @@ RE::AssetManager& RE::AssetManager::instance()
 
 void RE::AssetManager::setModeleTexture(const std::string& name, int mapType, const Texture2D& texture)
 {
-	SetMaterialTexture(&modele[name].materials[0], mapType, texture);
+	SetMaterialTexture(&model[name].materials[0], mapType, texture);
 }
 
 void RE::AssetManager::setMaterialShader(const std::string& name, const Shader& shader)
 {
-	modele[name].materials[0].shader = shader;
+	model[name].materials[0].shader = shader;
 }
