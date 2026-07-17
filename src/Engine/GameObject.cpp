@@ -6,17 +6,12 @@
 #include "../Core/Math.hpp"
 #include "../Settings.hpp"
 
-RE::GameObject::GameObject() : transform({ b3Vec3_zero, b3Quat_identity, b3Vec3_one }), m_enabled(true), m_euler(b3Vec3_zero)
+RE::GameObject::GameObject() : transform({ b3Vec3_zero, b3Quat_identity, b3Vec3_one }), m_enabled(true), m_euler(b3Vec3_zero), hull(nullptr), model(nullptr), id(b3_nullBodyId)
 {
 
 }
 
-RE::GameObject::~GameObject()
-{
-    
-}
-
-RE::GameObject::GameObject(const b3WorldId& world, const Transform& transform, b3BodyType type) : transform(transform), m_enabled(true), m_euler(b3Vec3_zero), type(type)
+RE::GameObject::GameObject(const b3WorldId& world, const Transform& transform, b3BodyType type) : transform(transform), m_enabled(true), m_euler(b3Vec3_zero), type(type), hull(nullptr), model(nullptr)
 {
     m_bodyDef = b3DefaultBodyDef();
     m_bodyDef.type = this->type;
@@ -61,6 +56,19 @@ void RE::GameObject::loadModel(Model* model, const b3ShapeDef& def, const b3Vec3
     b3Vec3 hbox = box * 0.5;
     b3BoxHull boxHull = b3MakeBoxHull(hbox.x, hbox.y, hbox.z);
     b3CreateHullShape(id, &def, &boxHull.base);
+}
+
+void RE::GameObject::unload()
+{
+    if (hull != nullptr)
+    {
+        b3DestroyHull(hull);
+    }
+
+    if (b3Body_IsValid(id))
+    {
+        b3DestroyBody(id);
+    }
 }
 
 void RE::GameObject::setType(b3BodyType type)
