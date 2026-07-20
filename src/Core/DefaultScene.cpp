@@ -82,7 +82,11 @@ DefaultScene::DefaultScene() : SceneSkeleton(), m_view(ViewMode::FPS), m_assetMa
 	};
 
 	//Init framebuffer for pixelised effect
-	m_pixelised = RE::FrameBuffer(1920, 1080);
+	m_pixelised = RE::FrameBuffer(800, 450);
+
+	start = { 0, 0, 0 };
+	end = { 1, 0, 0 };
+	angleX = 0;
 }
 
 void DefaultScene::update()
@@ -107,6 +111,13 @@ void DefaultScene::update()
 	{
 		m_cubeGroup[i].updatePhysics();
 	}
+
+	
+	auto x = QuaternionFromAxisAngle({ 1, 0, 0 }, angleX);
+	auto y = QuaternionFromAxisAngle({ 0, 1, 0 }, angleY);
+	Quaternion rotation = QuaternionMultiply(x, y);
+	
+	end = Vector3RotateByQuaternion({ 1, 0, 0 }, rotation);
 }
 
 void DefaultScene::render()
@@ -115,6 +126,7 @@ void DefaultScene::render()
 	BeginTextureMode(m_pixelised.target);
 		ClearBackground({ 40, 40, 40 });
 		BeginMode3D(m_view.camera3D);
+			
 			m_castle.draw();
 			m_robot.draw();
 			m_turret.draw();
@@ -132,6 +144,8 @@ void DefaultScene::render()
 			DrawLine3D({ 0, 0, 0 }, { 10, 0, 0 }, RED);
 			DrawLine3D({ 0, 0, 0 }, { 0, 10, 0 }, GREEN);
 			DrawLine3D({ 0, 0, 0 }, { 0, 0, 10 }, BLUE);
+			
+			DrawLine3D(start, end, RED);
 		EndMode3D();
 	EndTextureMode();
 
@@ -160,5 +174,7 @@ void DefaultScene::gui()
 		ImGui::PushID(2);
 		m_dlight.gui();
 		ImGui::PopID();
+		ImGui::DragFloat("AngleX", &angleX, 0.1f);
+		ImGui::DragFloat("AngleY", &angleY, 0.1f);
 	ImGui::End();
 }

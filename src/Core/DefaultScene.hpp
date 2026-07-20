@@ -45,4 +45,9 @@ private :
 	RE::DirectionalLight m_dlight;
 	RE::PointLight m_light;
 	RE::PointLight m_lightRed;
+
+	Vector3 start;
+	Vector3 end;
+	float angleX;
+	float angleY;
 };

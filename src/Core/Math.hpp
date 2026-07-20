@@ -1,6 +1,7 @@
 #pragma once
 #define _USE_MATH_DEFINES
-#define ALMOST_PI_2 PI / 2 - 0.01f
+#define ALMOST_PI_2_MIN PI / 2 + 0.01f
+#define ALMOST_PI_2_MAX PI / 2 - 0.01f
 
 #include <iostream>
 #include <vector>

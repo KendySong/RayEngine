@@ -49,7 +49,7 @@ void View::update()
 	mouseDelta *= DEG2RAD;
 	m_yaw += mouseDelta.x;
 	m_pitch -= mouseDelta.y;
-	m_pitch = Math::clamp(-ALMOST_PI_2, ALMOST_PI_2, m_pitch);
+	m_pitch = Math::clamp(-ALMOST_PI_2_MIN, ALMOST_PI_2_MAX, m_pitch);
 	
 	switch (mode)
 	{
@@ -111,7 +111,7 @@ void View::setCurrentCamera()
 }
 
 void View::updateDirection()
-{
+{	
 	m_direction.x = cos(m_yaw) * cos(m_pitch);
 	m_direction.y = sin(m_pitch);
 	m_direction.z = sin(m_yaw) * cos(m_pitch);
